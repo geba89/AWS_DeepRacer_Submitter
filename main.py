@@ -34,14 +34,14 @@ def aws_submit(email, password, page, model):
     button_security_key.grid_forget()
     submitter.open_page(page)
     submitter.close_reward()
-    submitter.select_and_submit_model(int(model), button_id)
+    submitter.select_and_submit_model(int(model_var.get()), button_id)
     
     while keep_submitting:
         try:            
             start_time = time.time()
             submitter.check_if_can_submit()
             submitter.open_page(page)
-            submitter.select_and_submit_model(int(model), button_id)
+            submitter.select_and_submit_model(int(model_var.get()), button_id)
             end_time = time.time()
             if end_time - start_time < 15:
                 button_id = 8            

@@ -36,10 +36,9 @@ class Aws_DeepRacer_Submitter():
         search.send_keys(password)
         search = self.driver.find_element(By.ID, "signin_button")
         search.click()  
-        time.sleep(3)
     
     def aws_select_root(self, user):
-        time.sleep(3)
+        self.wait_for_element(self.driver.find_element(By.ID, "root_user_radio_button"))
         search = self.driver.find_element(By.ID, "root_user_radio_button")
         search.click()
         search = self.driver.find_element(By.CLASS_NAME, "aws-signin-textfield")
@@ -48,7 +47,7 @@ class Aws_DeepRacer_Submitter():
         search.click()
 
     def aws_root_password(self, password):
-        time.sleep(1)
+        self.wait_for_element(self.driver.find_element(By.ID, "password"))
         search = self.driver.find_element(By.ID, "password")
         search.send_keys(password)
         search = self.driver.find_element(By.ID, "signin_button")
@@ -56,13 +55,15 @@ class Aws_DeepRacer_Submitter():
 
     
     def close_reward(self):
-        time.sleep(5)      
+        time.sleep(2)      
+        self.wait_for_element(self.driver.find_elements(By.XPATH, "//*[contains(@class, 'awsui_dismiss-control')]"))
         if len(self.driver.find_elements(By.XPATH, "//*[contains(@class, 'awsui_dismiss-control')]")) > 1:
             search = self.driver.find_elements(By.XPATH, "//*[contains(@class, 'awsui_dismiss-control')]")[1]
             search.click()     
 
-    def select_and_submit_model(self, model_id, button_id):
-        time.sleep(1)      
+    def select_and_submit_model(self, model_id, button_id):        
+        model_id -= 1
+        self.wait_for_element(self.driver.find_elements(By.XPATH, "//*[contains(@class, 'awsui_label-content')]"))
         search = self.driver.find_elements(By.XPATH, "//*[contains(@id,'formField')]")[2]
         search.click()
         search = self.driver.find_elements(By.XPATH, "//*[contains(@class, 'awsui_label-content')]")[model_id]
@@ -76,3 +77,22 @@ class Aws_DeepRacer_Submitter():
 
     def open_page(self, page):
         self.driver.get(page) 
+
+    def wait_for_element(self, element):
+        retry_count = 0
+        retry_max = 5
+        found_element = False
+        while not found_element:
+            if retry_count == retry_max:
+                found_element = True
+            try:
+                element_to_find = element
+                if len(element_to_find) > 0:
+                    element_to_find[0].text
+                else:
+                    element_to_find.text
+                found_element = True
+            except:
+                time.sleep(1)
+                retry_count += 1
+
